@@ -17,13 +17,21 @@ import com.sina.cloudstorage.services.scs.SCS;
 import com.sina.cloudstorage.services.scs.SCSClient;
 import com.sina.cloudstorage.services.scs.model.ListObjectsRequest;
 import com.sina.cloudstorage.services.scs.model.ObjectListing;
-import com.sina.cloudstorage.util.URLEncodedUtils;
 
 public class DeleteObjectServlet  extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		// reading the user input
+		if (request.getParameter("path") == null){
+			Map<String,String> result = new HashMap<String,String>();
+			result.put("state", "error");
+			result.put("reason", "could not find path parameter");
+			Gson gson = new Gson();
+			response.getWriter().println(gson.toJson(result));
+			return;
+		}
+		
 		String path = null;
 		if("scstestjava".equals(System.getenv("appname")))
 			path = URLDecoder.decode(request.getParameter("path"), "UTF-8");

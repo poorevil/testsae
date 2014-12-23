@@ -3,12 +3,15 @@ package org.evil.scsforsae;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 import com.sina.cloudstorage.auth.BasicAWSCredentials;
 import com.sina.cloudstorage.services.scs.SCS;
 import com.sina.cloudstorage.services.scs.SCSClient;
@@ -19,6 +22,15 @@ public class CreateFolderNameServlet  extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		// reading the user input
+		if (request.getParameter("path") == null){
+			Map<String,String> result = new HashMap<String,String>();
+			result.put("state", "error");
+			result.put("reason", "could not find path parameter");
+			Gson gson = new Gson();
+			response.getWriter().println(gson.toJson(result));
+			return;
+		}
+		
 		String path = null;
 		if("scstestjava".equals(System.getenv("appname")))
 			path = URLDecoder.decode(request.getParameter("path"), "UTF-8");

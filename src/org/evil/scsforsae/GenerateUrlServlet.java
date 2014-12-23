@@ -23,6 +23,15 @@ public class GenerateUrlServlet  extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
 		
+		if (request.getParameter("path") == null){
+			Map<String,String> result = new HashMap<String,String>();
+			result.put("state", "error");
+			result.put("reason", "could not find path parameter");
+			Gson gson = new Gson();
+			response.getWriter().println(gson.toJson(result));
+			return;
+		}
+		
 		String path = null;
 		if("scstestjava".equals(System.getenv("appname")))
 			path = URLDecoder.decode(request.getParameter("path"), "UTF-8");

@@ -12,7 +12,7 @@
     <title>登录</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 
     <!-- Custom styles for this template -->
     <!-- <link href="signin.css" rel="stylesheet"> -->
@@ -75,13 +75,13 @@
 
     <div class="container">
 
-      <form class="form-signin" role="form" action="./loginservlet">
+      <form id="loginForm" class="form-signin" role="form" action="./loginservlet">
         <h2 class="form-signin-heading">Please login</h2>
-        <input name="accessKey" type="text" class="form-control" placeholder="Access Key" required autofocus>
-        <input name="secretKey" type="password" class="form-control" placeholder="Secret Key" required>
+        <input id="accessKey" name="accessKey" type="text" class="form-control" placeholder="Access Key" required autofocus>
+        <input id="secretKey" name="secretKey" type="password" class="form-control" placeholder="Secret Key" required>
         <div class="checkbox">
           <label>
-            <input type="checkbox" value="remember-me"> Remember me
+            <input id="rememberMe" type="checkbox" checked="checked" value="remember-me"> Remember me
           </label>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
@@ -98,14 +98,34 @@
 
     </div> <!-- /container -->
 
-    
-
-    
-    
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        if (window.localStorage){
+            var storage = window.localStorage;
+            var accessKey = storage.getItem("accessKey");
+            var secretKey = storage.getItem("secretKey");
+
+            if (accessKey) $("#accessKey").val(accessKey);
+            if (secretKey) $("#secretKey").val(secretKey);
+
+            $('#loginForm').submit(function(){
+                if ($("#rememberMe").prop("checked")){
+                    storage.setItem("accessKey",$("#accessKey").val());
+                    storage.setItem("secretKey",$("#secretKey").val());
+                }else{
+                    storage.clear();
+                }
+                return true;
+            }); 
+        }
+    });
+    </script>
+
+
   </body>
 </html>

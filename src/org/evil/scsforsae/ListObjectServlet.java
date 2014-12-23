@@ -20,6 +20,11 @@ public class ListObjectServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// reading the user input
 		String path = null;
+		if (request.getParameter("path") == null){
+			response.sendRedirect("login");
+			return;
+		}
+			
 		if("scstestjava".equals(System.getenv("appname")))
 			path = URLDecoder.decode(request.getParameter("path"), "UTF-8");
 		else
@@ -34,7 +39,13 @@ public class ListObjectServlet extends HttpServlet {
 		String accessKey = (String)request.getSession().getAttribute("accessKey");
 		String secretKey = (String)request.getSession().getAttribute("secretKey");
 		
-		SCS client = new SCSClient(new BasicAWSCredentials(accessKey, secretKey));
+		SCS client = null;
+		try {
+			client = new SCSClient(new BasicAWSCredentials(accessKey, secretKey));
+		} catch (Exception e) {
+			response.sendRedirect("login");
+			return;
+		}
 		try {
 			ListObjectsRequest loRequest = new ListObjectsRequest();
 			loRequest.setBucketName(bucketName);
